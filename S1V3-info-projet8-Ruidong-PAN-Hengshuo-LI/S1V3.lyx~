@@ -1,0 +1,722 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass extarticle
+\use_default_options true
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date true
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style french
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Algorithmes de Markov
+\end_layout
+
+\begin_layout Author
+Ruidong PAN & Hengshuo LI
+\end_layout
+
+\begin_layout Part*
+La description des structures de données utilisées
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Type list = ^terme 
+\end_layout
+
+\begin_layout Plain Layout
+
+     terme = Enregistrement 
+\end_layout
+
+\begin_layout Plain Layout
+
+                gau : chaîne de caractère 
+\end_layout
+
+\begin_layout Plain Layout
+
+                dro : chaîne de caractère 
+\end_layout
+
+\begin_layout Plain Layout
+
+                aret : caractère
+\end_layout
+
+\begin_layout Plain Layout
+
+                suiv : list 
+\end_layout
+
+\begin_layout Plain Layout
+
+             FinEnregistrement
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part*
+Pseudo-langage l’algorithme général
+\end_layout
+
+\begin_layout Section*
+Lire le fichier et créer la liste A text avec des règles 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+fonction creat_liste (nomfichier: chaîne de caractère) : list
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Var A,r : list
+\end_layout
+
+\begin_layout Plain Layout
+
+    f : fichier texte
+\end_layout
+
+\begin_layout Plain Layout
+
+    c,m,n : chaîne de caractère
+\end_layout
+
+\begin_layout Plain Layout
+
+    i : entier
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Début
+\end_layout
+
+\begin_layout Plain Layout
+
+  f <- OuvrirEnLecture(nomfichier)
+\end_layout
+
+\begin_layout Plain Layout
+
+  A <- nil
+\end_layout
+
+\begin_layout Plain Layout
+
+  Tantque  nonFinFichier(f) faire
+\end_layout
+
+\begin_layout Plain Layout
+
+    c <- LireChaîne(f)
+\end_layout
+
+\begin_layout Plain Layout
+
+    m,n <- 
+\begin_inset Quotes fld
+\end_inset
+
+
+\begin_inset Quotes fld
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    i <- 1
+\end_layout
+
+\begin_layout Plain Layout
+
+    Tantque c[i] <> 
+\begin_inset Quotes fld
+\end_inset
+
+>
+\begin_inset Quotes frd
+\end_inset
+
+ faire
+\end_layout
+
+\begin_layout Plain Layout
+
+        m <- Concaténer(m,c[i])
+\end_layout
+
+\begin_layout Plain Layout
+
+        i <- i+1
+\end_layout
+
+\begin_layout Plain Layout
+
+    Fintantque
+\end_layout
+
+\begin_layout Plain Layout
+
+      Si A=nil 
+\end_layout
+
+\begin_layout Plain Layout
+
+         Alors A <- allouer(terme)    
+\end_layout
+
+\begin_layout Plain Layout
+
+               r <- A 
+\end_layout
+
+\begin_layout Plain Layout
+
+      Sinon r^.suiv <- allouer(terme)  
+\end_layout
+
+\begin_layout Plain Layout
+
+          r <- r^.suiv 
+\end_layout
+
+\begin_layout Plain Layout
+
+      FinSi
+\end_layout
+
+\begin_layout Plain Layout
+
+        r^.gau <- m
+\end_layout
+
+\begin_layout Plain Layout
+
+        i <- i+1
+\end_layout
+
+\begin_layout Plain Layout
+
+        r^.aret <- 
+\begin_inset Quotes fld
+\end_inset
+
+F
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    Tantque i <= lg(c)-2 faire
+\end_layout
+
+\begin_layout Plain Layout
+
+      Si c[i] == 
+\begin_inset Quotes fld
+\end_inset
+
+.
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+         Alors r^.aret <- 
+\begin_inset Quotes fld
+\end_inset
+
+T
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+      Sinon n <- Concaténer(n,c[i])
+\end_layout
+
+\begin_layout Plain Layout
+
+            i <- i+1
+\end_layout
+
+\begin_layout Plain Layout
+
+      Finsi
+\end_layout
+
+\begin_layout Plain Layout
+
+    Fintantque
+\end_layout
+
+\begin_layout Plain Layout
+
+      r^.dro <- n
+\end_layout
+
+\begin_layout Plain Layout
+
+  Fintantque
+\end_layout
+
+\begin_layout Plain Layout
+
+    r^.suiv <- nil
+\end_layout
+
+\begin_layout Plain Layout
+
+  Retourner (A)
+\end_layout
+
+\begin_layout Plain Layout
+
+  Fermer(f)
+\end_layout
+
+\begin_layout Plain Layout
+
+Fin
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Lire un donnée et appliquer les règles sur la donnée
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+fonction result (A : list , d : chaîne de caractère) : chaîne de caractère
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Var m : chaîne de caractère
+\end_layout
+
+\begin_layout Plain Layout
+
+    r : list
+\end_layout
+
+\begin_layout Plain Layout
+
+    a,b,i,j,k : entier
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Début
+\end_layout
+
+\begin_layout Plain Layout
+
+  a <- 0 
+\end_layout
+
+\begin_layout Plain Layout
+
+  r <- A
+\end_layout
+
+\begin_layout Plain Layout
+
+  Tantque (a == 0) et (r <> nil) faire
+\end_layout
+
+\begin_layout Plain Layout
+
+    m <- 
+\begin_inset Quotes fld
+\end_inset
+
+
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    j <- 1
+\end_layout
+
+\begin_layout Plain Layout
+
+    b <- 0
+\end_layout
+
+\begin_layout Plain Layout
+
+    Tantque (j <= lg(d)-lg(r^.gau)+1) et (b == 0) faire
+\end_layout
+
+\begin_layout Plain Layout
+
+       Pour i <- 0 à lg(r^.gau)-1 inc +1 faire
+\end_layout
+
+\begin_layout Plain Layout
+
+       m <- Concaténer(m,d[j+i])
+\end_layout
+
+\begin_layout Plain Layout
+
+       Finpour
+\end_layout
+
+\begin_layout Plain Layout
+
+       Si Egal(m,r^.gau)
+\end_layout
+
+\begin_layout Plain Layout
+
+          Alors Effacer(d,j,lg(r^.gau))
+\end_layout
+
+\begin_layout Plain Layout
+
+              Si r^.dro <> 
+\begin_inset Quotes fld
+\end_inset
+
+ 
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+                 Alors Insérer(d,r^.dro,j)
+\end_layout
+
+\begin_layout Plain Layout
+
+              Finsi
+\end_layout
+
+\begin_layout Plain Layout
+
+                b <- 1
+\end_layout
+
+\begin_layout Plain Layout
+
+                Si r^.aret == 
+\begin_inset Quotes fld
+\end_inset
+
+F
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+                   Alors r <- A
+\end_layout
+
+\begin_layout Plain Layout
+
+                Sinon a <- 1
+\end_layout
+
+\begin_layout Plain Layout
+
+                Finsi
+\end_layout
+
+\begin_layout Plain Layout
+
+       Sinon j<- j+1
+\end_layout
+
+\begin_layout Plain Layout
+
+     Fintantque
+\end_layout
+
+\begin_layout Plain Layout
+
+       Si b == 0
+\end_layout
+
+\begin_layout Plain Layout
+
+       Alors r <- r^.suiv
+\end_layout
+
+\begin_layout Plain Layout
+
+       Finsi
+\end_layout
+
+\begin_layout Plain Layout
+
+  Fintantque
+\end_layout
+
+\begin_layout Plain Layout
+
+  Pour k <- 1 à lg(d) faire
+\end_layout
+
+\begin_layout Plain Layout
+
+    écrire (d[k])
+\end_layout
+
+\begin_layout Plain Layout
+
+  Finpour
+\end_layout
+
+\begin_layout Plain Layout
+
+  Retourner (d)
+\end_layout
+
+\begin_layout Plain Layout
+
+Fin
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Programme principal
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+program main ()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+var file , donnee : chaîne de caractère
+\end_layout
+
+\begin_layout Plain Layout
+
+    List : list 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  écrire ("veuillez saisir le nom du fichier")
+\end_layout
+
+\begin_layout Plain Layout
+
+  lire (file)
+\end_layout
+
+\begin_layout Plain Layout
+
+  écrire (
+\begin_inset Quotes fld
+\end_inset
+
+veuillez saisir une donnée
+\begin_inset Quotes frd
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Plain Layout
+
+  lire (donnee)
+\end_layout
+
+\begin_layout Plain Layout
+
+  List = creat_liste (file)
+\end_layout
+
+\begin_layout Plain Layout
+
+  result (List , donnee)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Fin
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

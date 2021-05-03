@@ -1,0 +1,1375 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass extarticle
+\use_default_options true
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date true
+\justification true
+\use_refstyle 1
+\use_minted 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style french
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Méthode de Runge-Kutta d’ordre 3
+\end_layout
+
+\begin_layout Author
+Ruidong Pan & Hengshuo Li
+\end_layout
+
+\begin_layout Part*
+Introduction
+\end_layout
+
+\begin_layout Standard
+Dans ce projet, nous allons étudier la résolution d'équations différentielles
+ ordinaires sous la forme suivant:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{cases}
+y^{'}(x)=f(x,y(x)) & x\in[a,b]\\
+y(x_{0})=y_{0} & x_{0}\in[a,b]
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Nous toujours considérons que 
+\begin_inset Formula $f$
+\end_inset
+
+ est continue et Lipschitzienne par rapport à sa deuxième variable, cela
+ signifie que il y a une unique solution pour cette équation différentielle
+ ordinaire.
+ 
+\end_layout
+
+\begin_layout Standard
+Bien qu'il existe de nombreuses méthodes analytiques pour résoudre les équations
+ différentielles ordinaires, ces méthodes ne s'appliquent qu'à certaines
+ équations différentielles spéciales, donc pour les équations différentielles
+ générales nous utilisons souvent des procédés de résolution numérique.
+ D'après le cours analyse numérique, nous avons connu les méthodes différents
+ pour résoudre les équations différentielles ordinaires, par exemple la
+ méthode d’Euler, la méthode d’Euler implicite, les méthodes de Runge-Kutta.
+ Et dans ce projet nous allons utiliser la méthode de Runge-Kutta d’ordre
+ 3 sur les différentes équations différentielles ordinaires pour chercher
+ la valeur de 
+\begin_inset Formula $y$
+\end_inset
+
+ en les points discrètes qui sont dans l'intervale 
+\begin_inset Formula $[a,b]$
+\end_inset
+
+.
+ De plus nous allons étudier les différences entre ces valeurs obtenues
+ par la méthode de Runge-Kutta et les valeurs exactes dans les mêmes points
+ discrètes.
+ Avant de commencer, nous vous présentons les formules de la méthode de
+ Runge-Kutta d’ordre 3 que nous utilisons:
+\begin_inset Formula 
+\[
+\begin{cases}
+y_{n+1}=y_{n}+\frac{h}{6}(K_{1}+K_{2}+K_{3})\\
+K_{1}=f(x_{n},y_{n})\\
+K_{2}=f(x_{n}+\frac{h}{2},y_{n}+\frac{h}{2}K_{1})\\
+K_{3}=f(x_{n}+h,y_{n}-hK_{1}+2hK_{2})
+\end{cases}
+\]
+
+\end_inset
+
+ où 
+\begin_inset Formula $y_{n+1}=y(x_{n+1})$
+\end_inset
+
+ , 
+\begin_inset Formula $y_{n}=y(x_{n})$
+\end_inset
+
+ , 
+\begin_inset Formula $x_{n}$
+\end_inset
+
+ sont des points discrètes dans l'intervale 
+\begin_inset Formula $[a,b]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Part*
+Programmation en langue C
+\end_layout
+
+\begin_layout Standard
+Pour simplifier les calculs, nous allons calculer les erreurs, les approximation
+s, les solutions exactes etc.
+ à l'aide du langage C.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=C,numbers=left,fontsize={\normalsize},breaklines=true,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#include<stdlib.h>  
+\end_layout
+
+\begin_layout Plain Layout
+
+#include<stdio.h> 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include<math.h>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+/*n désigne le nombre de intervales égales et n+1 désigne le nombre de points.*/
+   
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  //Méthode de Runge-Kutta d'ordre 3
+\end_layout
+
+\begin_layout Plain Layout
+
+  int rungeKutta(double y0,double a,double b,int n,double *x,double *y,double
+ (*function)(double,double)){ 
+\end_layout
+
+\begin_layout Plain Layout
+
+      double h=(b-a)/n,k1,k2,k3;     
+\end_layout
+
+\begin_layout Plain Layout
+
+      int i;        
+\end_layout
+
+\begin_layout Plain Layout
+
+      // x=(double*)malloc((n+1)*sizeof(double));    
+\end_layout
+
+\begin_layout Plain Layout
+
+      // y=(double*)malloc((n+1)*sizeof(double));     
+\end_layout
+
+\begin_layout Plain Layout
+
+      x[0]=a;       
+\end_layout
+
+\begin_layout Plain Layout
+
+      y[0]=y0;     
+\end_layout
+
+\begin_layout Plain Layout
+
+      for(i=0;i<n;i++){       
+\end_layout
+
+\begin_layout Plain Layout
+
+         x[i+1]=x[i]+h;    
+\end_layout
+
+\begin_layout Plain Layout
+
+         k1=function(x[i],y[i]);      
+\end_layout
+
+\begin_layout Plain Layout
+
+         k2=function(x[i]+h/2,y[i]+h*k1/2);    
+\end_layout
+
+\begin_layout Plain Layout
+
+         k3=function(x[i]+h,y[i]-h*k1+2*h*k2);     
+\end_layout
+
+\begin_layout Plain Layout
+
+         y[i+1]=y[i]+h*(k1+4*k2+k3)/6;        
+\end_layout
+
+\begin_layout Plain Layout
+
+      }        
+\end_layout
+
+\begin_layout Plain Layout
+
+      return 1;    
+\end_layout
+
+\begin_layout Plain Layout
+
+  }               
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  //exemple résoudre y'=2*y/(1+x);y0=1;    
+\end_layout
+
+\begin_layout Plain Layout
+
+      double function(double x,double y){       
+\end_layout
+
+\begin_layout Plain Layout
+
+         return 2*y/(1+x);        
+\end_layout
+
+\begin_layout Plain Layout
+
+      }                     
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  //solution exacte de équation différentielle y=(1+x)^2      
+\end_layout
+
+\begin_layout Plain Layout
+
+      double f(double x){       
+\end_layout
+
+\begin_layout Plain Layout
+
+        return (1+x)*(1+x);       
+\end_layout
+
+\begin_layout Plain Layout
+
+      }
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   int main(){         
+\end_layout
+
+\begin_layout Plain Layout
+
+        int i,n;           
+\end_layout
+
+\begin_layout Plain Layout
+
+        double y0,a,b;      
+\end_layout
+
+\begin_layout Plain Layout
+
+        printf("veuillez saisir respectivement le valeur initial y0, intervale
+ à gauche a, intervale à droit b et le nombre de points intermédiaires n:
+\backslash
+n");       
+\end_layout
+
+\begin_layout Plain Layout
+
+        scanf("%lf%lf%lf%d",&y0,&a,&b,&n);        
+\end_layout
+
+\begin_layout Plain Layout
+
+        double x[n+1],y[n+1];       
+\end_layout
+
+\begin_layout Plain Layout
+
+        double h=(b-a)/n;               
+\end_layout
+
+\begin_layout Plain Layout
+
+        printf("Utiliser la méthode Ryuga-Kuta de troisième ordre:
+\backslash
+n");           
+\end_layout
+
+\begin_layout Plain Layout
+
+        rungeKutta(y0,a,b,n,x,y,function);
+\end_layout
+
+\begin_layout Plain Layout
+
+        printf("y0=%lf,a=%lf,b=%lf,le pas: h=%lf
+\backslash
+n",y0,a,b,h);
+\end_layout
+
+\begin_layout Plain Layout
+
+        for(i=0;i<(n+1);i++)
+\end_layout
+
+\begin_layout Plain Layout
+
+        //erreur: différences entre les valeurs exactes et approximatives
+\end_layout
+
+\begin_layout Plain Layout
+
+ printf("x[%d]=%11.10f,y[%d]=%16.15f,y(%d)=%16.15lf,erreur:%16.15le
+\backslash
+n",i,x[i],i,y[i],i,f(x[i]),f(x[i])-y[i]); 
+\end_layout
+
+\begin_layout Plain Layout
+
+        return 1;     
+\end_layout
+
+\begin_layout Plain Layout
+
+   }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part*
+Résultats numériques
+\end_layout
+
+\begin_layout Standard
+Après une compilation réussie, nous choisirons deux équations différentielles
+ ordinaires différentes à étudier.
+\end_layout
+
+\begin_layout Standard
+Nous savons que l'erreur entre l'approximation obtenue par la méthode Runge-Kutt
+a et la valeur exacte est principalement liée à la taille du pas, et nous
+ allons donc essayer de choisir les différents tailles du pas pour la même
+ équation différentielle et de trouver la relation entre la taille du pas
+ et l'erreur en utilisant les équations différentielles nous étudions.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+La première équation différentielle nous allons étudier:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{cases}
+y^{'}=\frac{1}{cos^{2}(x)} & x\in[0,\frac{\pi}{2}[\\
+y_{0}=0 & x_{0}=0
+\end{cases}
+\]
+
+\end_inset
+
+ dont la solution exacte est 
+\begin_inset Formula $y=tan(x)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=10$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 1-10.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=30$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 1-30.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=40$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 1-40.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=60$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 1-60-1.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 1-60-2.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Commentaire:
+\end_layout
+
+\begin_layout Standard
+Nous pouvons constater que lorsque la taille du pas diminue, c'est-à-dire
+ que le nombre du pas augmente, l'erreur diminue de manière significative
+ en la plupart des points, mais l'erreur augmente progressivement lorsque
+ le point se rapproche de l'extrémité droite, mais ceci est normal et est
+ dû à l'erreur cumulative.
+\end_layout
+
+\begin_layout Standard
+Nous notons également que en les points autour de l'extrémité droite, les
+ erreurs sont plus importantes pour les petits pas que pour les grands pas.
+ Mais cela est dû à notre choix de l'équation.
+ Pour la solution 
+\begin_inset Formula $tan(x)$
+\end_inset
+
+, sa pente autour de 
+\begin_inset Formula $\frac{\pi}{2}$
+\end_inset
+
+ est trop grand, plus le point est proche de 
+\begin_inset Formula $\frac{\pi}{2}$
+\end_inset
+
+ , plus sa pente est grande et plus il tend vers l'infini positif, et le
+ taux de variation de la pente est donc très important en particulier pour
+ les points autour de 
+\begin_inset Formula $\frac{\pi}{2}$
+\end_inset
+
+ , donc 
+\begin_inset Formula $K_{1}$
+\end_inset
+
+ , 
+\begin_inset Formula $K_{2}$
+\end_inset
+
+ et 
+\begin_inset Formula $K_{3}$
+\end_inset
+
+ on calcul ne peuvent pas bien représenter la pente moyenne dans l'intervalle
+ 
+\begin_inset Formula $[x_{i},x_{i+1}]$
+\end_inset
+
+ qui est voisinage de 
+\begin_inset Formula $\frac{\pi}{2}$
+\end_inset
+
+.
+ Donc plus la taille du pas est petite, plus les points proches de l'extrémité
+ droite sont proches de 
+\begin_inset Formula $\frac{\pi}{2}$
+\end_inset
+
+ , et plus la pente moyenne est mal représentée, de sorte que l'erreur à
+ ces points est plus grande, même au-delà de l'erreur maximale pour les
+ grandes tailles du pas.
+\end_layout
+
+\begin_layout Standard
+Alors comment choisir le nombre du pas? Nous pouvons supposer que l'erreur
+ maximale que nous pouvons accepter est de 
+\begin_inset Formula $10^{-2}$
+\end_inset
+
+, alors sur les résultats obtenus, nous pouvons facilement conclure que
+ le nombre du pas d'environ 30 est optimale, avec son erreur maximale toujours
+ à 
+\begin_inset Formula $10^{-2}$
+\end_inset
+
+ et son erreur minimale jusqu'à 
+\begin_inset Formula $10^{-9}$
+\end_inset
+
+ , c'est pas mal.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+La deuxième équation différentielle nous allons étudier:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{cases}
+y^{'}=y & x\in[0,2]\\
+y_{0}=1 & x_{0}=0
+\end{cases}
+\]
+
+\end_inset
+
+ dont la solution exacte est 
+\begin_inset Formula $y=e^{x}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=10$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 2-10.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=20$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 2-20.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=40$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 2-40.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=60$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 2-60-1.png
+	width 15cm
+	height 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 2-60-2.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=100$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 2-100-1.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 2-100-2.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Commentaire:
+\end_layout
+
+\begin_layout Standard
+Comme dans l'exemple ci-dessus, lorsque la taille du pas diminue, l'erreur
+ diminue de manière significative, mais l'erreur augmente progressivement
+ lorsque le point se rapproche de l'extrémité droite, mais ceci est normal
+ et est dû à l'erreur cumulative.
+\end_layout
+
+\begin_layout Standard
+Contrairement à l'exemple précédent, l'erreur maximale continue de diminuer
+ au fur et à mesure que la taille du pas diminue.
+ C'est-à-dire que lorsque la taille du pas s'approche de l'infini, l'erreur
+ maximale tend vers zéro.
+ En effet, la pente de 
+\begin_inset Formula $e^{x}$
+\end_inset
+
+ sur 
+\begin_inset Formula $[0,2]$
+\end_inset
+
+ est relativement plate, et le taux de variation de la pente est donc faible
+ contrairement à 
+\begin_inset Formula $tan(x)$
+\end_inset
+
+ sa pente tend vers l'infini lorsqu'il s'approche de 
+\begin_inset Formula $\frac{\pi}{2}$
+\end_inset
+
+ et le taux de variation de la pente est très important en particulier pour
+ les points autour de 
+\begin_inset Formula $\frac{\pi}{2}$
+\end_inset
+
+.
+ Donc 
+\begin_inset Formula $K_{1}$
+\end_inset
+
+ , 
+\begin_inset Formula $K_{2}$
+\end_inset
+
+ et 
+\begin_inset Formula $K_{3}$
+\end_inset
+
+ on calcul peuvent bien représenter la pente moyenne dans l'intervalle quelconqu
+e 
+\begin_inset Formula $[x_{i},x_{i+1}]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Alors comment choisir le nombre du pas? Si nous choisissons une taille du
+ pas trop petite, le nombre du pas augmentera, ce qui augmentera le nombre
+ d'opérations.
+ Nous pouvons constater qu'à un nombre du pas de 100, l'erreur minimale
+ est à 
+\begin_inset Formula $10^{-9}$
+\end_inset
+
+ et l'erreur maximale est à 
+\begin_inset Formula $10^{-6}$
+\end_inset
+
+.
+ Nous pouvons donc supposer que l'approximation est approximativement égale
+ à la valeur exacte.
+ De plus le nombre du pas n'est pas trop élevé, donc choisir 100 est un
+ bon choix, mais bien sûr nous pouvons aussi augmenter le nombre du pas
+ de la manière appropriée.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+La troisième équation différentielle nous allons étudier:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{cases}
+y^{'}=4x^{3}-13.2x^{2}+13.42x-4.144 & x\in[0,2]\\
+y_{0}=0.882 & x_{0}=0
+\end{cases}
+\]
+
+\end_inset
+
+ dont la solution exacte est 
+\begin_inset Formula $y=(x-0.5)(x-0.7)(x-1.4)(x-1.8)=x^{4}-4.4x^{3}+6.71x^{2}-4.144x+0.882$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=10$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 3-10.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=20$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 3-20.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=40$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 3-40.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=50$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 3-40-1.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 3-40-2.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le nombre du pas nous choisissons: 
+\begin_inset Formula $n=60$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 3-60-1.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename 3-60-2.png
+	width 15cm
+	height 10cm
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Commentaire:
+\end_layout
+
+\begin_layout Standard
+Dans ce cas, notre solution exacte est un polynôme avec 4 zéros distincts
+ en l'intervalle 
+\begin_inset Formula $[0,2]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Nous remarquons que l'erreur maximale est faible malgré la taille du pas
+ n'est pas assez petite, ce qui indique que l'approximation de cette solution
+ peut être bien obtenue en utilisant la méthode Runge-Kutta.
+\end_layout
+
+\begin_layout Standard
+Pour choisir le nombre du pas nous pouvons comparer les erreurs maximale
+ et minimale pour différentes nombre de pas en utilisant les résultats obtenus.
+\end_layout
+
+\begin_layout Standard
+Pour le nombre du pas est 10, l'erreur est dans 
+\begin_inset Formula $[10^{-16},10^{-15}]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Pour le nombre du pas est 20, l'erreur est dans 
+\begin_inset Formula $[10^{-17},10^{-15}]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Pour le nombre du pas est 40, l'erreur est dans 
+\begin_inset Formula $[10^{-17},10^{-15}]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Pour le nombre du pas est 50, l'erreur est dans 
+\begin_inset Formula $[10^{-17},10^{-14}]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Pour le nombre du pas est 60, l'erreur est dans 
+\begin_inset Formula $[10^{-17},10^{-14}]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Donc nous pouvons conclure que prenant le nombre du pas entre 20 et 40 est
+ optimale.
+\end_layout
+
+\begin_layout Part*
+Conclusion
+\end_layout
+
+\begin_layout Standard
+D'après les résultats nous avons obtenu, nous pouvons constater que si la
+ taille du pas est trop grande, l'erreur devient plus grande, mais si la
+ taille du pas est trop petite, elle conduira à une augmentation du nombre
+ d'opérations et aussi à l'accumulation d'erreurs(nous pouvons voir que
+ l'erreur augmente progressivement à mesure que le point 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ se rapproche de l'extrémité droite), il est donc très important de choisir
+ la bonne taille du pas pour minimiser les erreurs.
+ C'est le même principe que le professeur a enseigné en classe.
+ De plus pour différentes équations différentielles nous devons choisir
+ différentes tailles du pas optimales et il s'agir d'une analyse spécifique
+ de problèmes spécifiques.
+\end_layout
+
+\begin_layout Standard
+Finalement, dans ce projet, nous comprenons mieux comment résoudre les équations
+ différentielles en utilisant des approximations et aussi comment fonction
+ la méthode Runge-Kutta d'ordre 3.
+ Et bien sûr ce projet est très intéressant pour nous.
+\end_layout
+
+\end_body
+\end_document
